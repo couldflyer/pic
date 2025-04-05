@@ -1,7 +1,7 @@
 <?php
 error_reporting(0);
 $randomNumber = rand(1, 258);
-$imageUrl = 'https://raw.gitmirror.com/couldflyer/allimg/main/pc/img' . $randomNumber . '.webp';
+$imageUrl = 'https://cdn.jsdelivr.net/gh/couldflyer/allimg@main/pc/img' . $randomNumber . '.webp';
 
 // 使用file_get_contents替代
 function fetchImage($url) {
