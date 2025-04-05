@@ -1,32 +1,23 @@
 <?php
-// 生成1到258之间的随机数
+error_reporting(0);
 $randomNumber = rand(1, 258);
 $imageUrl = 'https://raw.gitmirror.com/couldflyer/allimg/main/pc/img' . $randomNumber . '.webp';
 
-// 尝试使用cURL获取图片（比file_get_contents更可靠）
+// 使用file_get_contents替代
 function fetchImage($url) {
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    $data = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    
-    return ($httpCode == 200) ? $data : false;
+    $context = stream_context_create([
+        'http' => ['ignore_errors' => true],
+        'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]
+    ]);
+    $data = @file_get_contents($url, false, $context);
+    return ($data !== false) ? $data : false;
 }
 
-// 尝试获取图片
 $imageData = fetchImage($imageUrl);
-
 if ($imageData !== false) {
-    // 成功获取图片
     header('Content-Type: image/webp');
     echo $imageData;
 } else {
-    // 图片获取失败，显示错误信息或备用图片
     header('Content-Type: text/html');
     echo '<!DOCTYPE html>
     <html>
